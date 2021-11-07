@@ -1,9 +1,21 @@
-import { TextField } from "@mui/material";
+import { Alert, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 
 export default function Home() {
+  const [tasks, setTasks] = useState([]);
+  const endpoint = "http://localhost:9000";
+
+  useEffect(() => {
+    fetch(`${endpoint}/api/tasks`)
+      .then((res) => res.json())
+      .then((data) => setTasks(data));
+  }, []);
+
+  console.log(tasks);
+
   return (
     <div style={{ height: "100vh" }}>
       <Head>
@@ -20,6 +32,14 @@ export default function Home() {
           label="Task"
           variant="outlined"
         />
+
+        <Box sx={{ paddingY: 8 }}>
+          {tasks?.map((doc, i) => (
+            <Alert key={i} severity="info">
+              {doc.task}
+            </Alert>
+          ))}
+        </Box>
       </Box>
     </div>
   );
